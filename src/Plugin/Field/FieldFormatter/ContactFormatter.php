@@ -34,7 +34,8 @@ class ContactFormatter extends FormatterBase {
     // Display value(s) for the field.
     $elements = [];
     foreach ($items as $delta => $item) {
-      if ($cid = $item->get('contact_id')->getValue() != NULL) {
+      if ($item->get('contact_id')->getValue() != NULL) {
+        $cid = $item->get('contact_id')->getValue();
         $results = NULL;
         try {
           /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
@@ -47,6 +48,9 @@ class ContactFormatter extends FormatterBase {
           $elements[] = [
             '#type' => 'markup',
             '#markup' => $results['display_name'],
+            '#cache' => [
+              'max-age' => 0,
+            ],
           ];
         }
       }

@@ -54,11 +54,22 @@ class ContactEndpoint extends ControllerBase {
   protected function lookupContact($search, $count) {
     $results = [];
     // Find CiviCRM contacts.
-    $params = [
-      'display_name' => ['LIKE' => $search],
-      'return' => ['id', 'display_name'],
-      'options' => ['limit' => $count],
-    ];
+    if (is_numeric($search)) {
+      // Search contact by contact_id.
+      $params = [
+        'contact_id' => $search,
+        'return' => ['id', 'display_name'],
+        'options' => ['limit' => $count],
+      ];
+    }
+    else {
+      // Search contact by display_name.
+      $params = [
+        'display_name' => $search,
+        'return' => ['id', 'display_name'],
+        'options' => ['limit' => $count],
+      ];
+    }
     try {
       /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
       $civicrm = \Drupal::service('civicrm.service');
@@ -67,11 +78,10 @@ class ContactEndpoint extends ControllerBase {
       \Drupal::logger('ContactFormatter')->error($e->getMessage());
     }
     if (!is_null($founded) && !empty($founded)) {
-      // Loop results.
       foreach ($founded['values'] as $found) {
         $results[] = [
           'value' => $found['contact_id'],
-          'label' => $found['display_name'],
+          'label' => $found['display_name'] . ' (' . $found['contact_id'] . ')',
         ];
       }
     }
