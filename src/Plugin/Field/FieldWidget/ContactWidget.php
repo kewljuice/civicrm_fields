@@ -24,9 +24,7 @@ class ContactWidget extends WidgetBase implements WidgetInterface {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-
     $item =& $items[$delta];
-
     // Store element(s) for the field.
     $element += [
       '#type' => 'details',
@@ -34,18 +32,17 @@ class ContactWidget extends WidgetBase implements WidgetInterface {
       '#open' => FALSE,
       '#group' => 'advanced',
     ];
-
-    // &todo Fetch value(s).
-    $options = ['1' => 'contact 1', '2' => 'contact 2', '100' => 'contact 100'];
-
-    // &todo Render value(s).
+    // Autocomplete field for contact_id.
     $element['contact_id'] = [
       '#title' => t('CiviCRM Contact ID'),
-      '#type' => 'select',
-      '#options' => $options,
+      '#type' => 'textfield',
+      '#autocomplete_route_name' => 'civicrm_fields.contact_endpoint',
+      '#autocomplete_route_parameters' => [
+        'entity' => 'contact',
+        'count' => 10,
+      ],
       '#default_value' => isset($item->contact_id) ? $item->contact_id : NULL,
     ];
-
     // Return element(s).
     return $element;
   }

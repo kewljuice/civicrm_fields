@@ -1,0 +1,7 @@
+civicrm_fields.contact_endpoint:
+  path: '/civicrm_fields/{entity}/{count}'
+  defaults:
+    _controller: 'Drupal\civicrm_fields\Controller\ContactEndpoint::fetchResponse'
+    _format: json
+  requirements:
+    _access: 'TRUE'
