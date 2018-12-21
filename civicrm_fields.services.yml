@@ -1,0 +1,4 @@
+services:
+  civicrm.service:
+    class: 'Drupal\civicrm_fields\Utility\CiviCRMService'
+    arguments: ['@civicrm']

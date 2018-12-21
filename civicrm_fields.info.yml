@@ -1,0 +1,11 @@
+name: CiviCRM Fields
+type: module
+description: Everything functionally related to CiviCRM field(s).
+core: 8.x
+version: 1.0
+package: CiviCRM
+
+dependencies:
+  - field
+  - civicrm
+
