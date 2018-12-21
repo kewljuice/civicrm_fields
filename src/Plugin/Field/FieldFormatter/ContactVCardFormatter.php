@@ -9,14 +9,14 @@ use Drupal\Core\Field\FormatterBase;
  * Plugin implementation of the 'civicrm_field_contact' formatter.
  *
  * @FieldFormatter(
- *   id = "civicrm_field_contact_formatter",
- *   label = @Translation("CiviCRM contact formatter"),
+ *   id = "civicrm_field_contact_vcard_formatter",
+ *   label = @Translation("CiviCRM contact VCard formatter"),
  *   field_types = {
  *     "civicrm_field_contact"
  *   }
  * )
  */
-class ContactFormatter extends FormatterBase {
+class ContactVCardFormatter extends FormatterBase {
 
   /**
    * {@inheritdoc}
@@ -46,10 +46,13 @@ class ContactFormatter extends FormatterBase {
         }
         if (!is_null($results) && !empty($results)) {
           $elements[] = [
-            '#type' => 'markup',
-            '#markup' => $results['display_name'],
+            '#theme' => 'contact_vcard',
+            '#item' => $results,
             '#cache' => [
               'max-age' => 0,
+            ],
+            '#attached' => [
+              'library' => 'civicrm_fields/contact-vcard',
             ],
           ];
         }

@@ -15,7 +15,7 @@ use Drupal\Core\TypedData\DataDefinition;
  *   label = @Translation("CiviCRM field_contact"),
  *   category = @Translation("CiviCRM"),
  *   default_widget = "civicrm_field_contact_widget",
- *   default_formatter = "civicrm_field_contact_formatter"
+ *   default_formatter = "civicrm_field_contact_default_formatter"
  * )
  */
 class ContactField extends FieldItemBase implements FieldItemInterface {

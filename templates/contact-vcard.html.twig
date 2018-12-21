@@ -1,0 +1,45 @@
+<div id="contact-{{ item.id }}" class="contact-civicrm">
+    <div class="contact-item">
+        {% if item.image_URL %}
+            <div class="contact-img-wrapper">
+                <div class="contact-item-field contact-img">
+                    <img src="{{ item.image_URL }}" alt="contact-{{ item.id }}">
+                </div>
+            </div>
+        {% endif %}
+        <div class="contact-info-wrapper">
+            {% if item.display_name %}
+                <div class="contact-item-field display-name">
+                    {{ item.display_name }}
+                </div>
+            {% endif %}
+            {% if item.job_title %}
+                <div class="contact-item-field contact-job-title">
+                    {{ item.job_title }}
+                </div>
+            {% endif %}
+            {% if item.current_employer %}
+                <div class="contact-item-field contact-current-employer">
+                    {{ item.current_employer }}
+                </div>
+            {% endif %}
+            {% if item.phone %}
+                <div class="contact-item-field contact-phone">
+                <span class="label">
+                  Tel:
+                </span>
+                    <a href="tel:{{ item.phone }}">
+                        <i class="fas fa-phone"></i>{{ item.phone }}
+                    </a>
+                </div>
+            {% endif %}
+            {% if item.email %}
+                <div class="contact-item-field contact-email">
+                    <a href="mailto:{{ item.email }}">
+                        <i class="far fa-envelope"></i>{{ item.email }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

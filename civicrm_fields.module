@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function civicrm_fields_theme() {
+  return [
+    'contact_vcard' => [
+      'variables' => [
+        'item' => [],
+      ],
+      'template' => 'contact-vcard',
+    ],
+  ];
+}

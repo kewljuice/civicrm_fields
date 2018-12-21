@@ -1,0 +1,50 @@
+.contact-civicrm .contact-item {
+  border: solid 1px #eee;
+  border-left: none;
+  border-left: 3px solid #7fc858;
+  padding: 16px 16px 16px 19px;
+  position: relative;
+  z-index: 1;
+  margin: 28px 0;
+}
+
+.contact-civicrm .contact-item:first-child {
+  margin-top: 0;
+}
+
+.contact-civicrm .contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.contact-civicrm .contact-item-field {
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 23px;
+}
+
+.contact-civicrm .contact-item-field a {
+  font-weight: 400;
+}
+
+.contact-civicrm .contact-img-wrapper,
+.contact-civicrm .contact-info-wrapper {
+  display: inline-block;
+}
+
+.contact-civicrm .contact-info-wrapper {
+  vertical-align: top;
+}
+
+.contact-civicrm .contact-img-wrapper {
+  margin-right: 16px;
+  vertical-align: middle;
+}
+
+.contact-civicrm .contact-img {
+  max-width: 100px;
+}
+
+.contact-civicrm .contact-name {
+  font-weight: 400;
+  padding-bottom: 4px;
+}

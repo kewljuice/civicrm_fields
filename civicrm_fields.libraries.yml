@@ -1,0 +1,5 @@
+contact-vcard:
+  version: 1.0
+  css:
+    theme:
+      css/contact-vcard.css: {}
