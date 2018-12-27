@@ -7,7 +7,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class ContactEndpoint extends ControllerBase {
+class CiviCRMFields extends ControllerBase {
 
   /**
    * Return JSON response.
@@ -16,7 +16,7 @@ class ContactEndpoint extends ControllerBase {
    *
    * @throws \Exception
    */
-  public function fetchResponse(Request $request, $entity, $count) {
+  public function Response(Request $request, $entity, $count) {
     $results = [];
     // Get the typed string from the URL, if exists.
     if ($input = $request->query->get('q')) {
