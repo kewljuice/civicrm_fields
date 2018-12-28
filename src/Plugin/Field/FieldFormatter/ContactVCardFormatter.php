@@ -42,7 +42,7 @@ class ContactVCardFormatter extends FormatterBase {
           $civicrm = \Drupal::service('civicrm.service');
           $results = $civicrm->API('Contact', 'GetSingle', ['contact_id' => $cid]);
         } catch (\Exception $e) {
-          \Drupal::logger('ContactFormatter')->error($e->getMessage());
+          \Drupal::logger('ContactVCardFormatter')->error($e->getMessage());
         }
         if (!is_null($results) && !empty($results)) {
           $elements[] = [

@@ -8,17 +8,17 @@ use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'civicrm_field_contact' field widget.
+ * Plugin implementation of the 'civicrm_field_event' field widget.
  *
  * @FieldWidget(
- *   id = "civicrm_field_contact_widget",
- *   label = @Translation("CiviCRM contact widget"),
+ *   id = "civicrm_field_event_widget",
+ *   label = @Translation("CiviCRM event widget"),
  *   field_types = {
- *     "civicrm_field_contact",
+ *     "civicrm_field_event",
  *   }
  * )
  */
-class ContactWidget extends WidgetBase implements WidgetInterface {
+class EventWidget extends WidgetBase implements WidgetInterface {
 
   /**
    * {@inheritdoc}
@@ -28,20 +28,20 @@ class ContactWidget extends WidgetBase implements WidgetInterface {
     // Store element(s) for the field.
     $element += [
       '#type' => 'details',
-      '#title' => t('CiviCRM Contact'),
+      '#title' => t('CiviCRM Event'),
       '#open' => FALSE,
       '#group' => 'advanced',
     ];
-    // Autocomplete field for contact_id.
-    $element['contact_id'] = [
-      '#title' => t('CiviCRM Contact ID'),
+    // Autocomplete field for event_id.
+    $element['event_id'] = [
+      '#title' => t('CiviCRM Event ID'),
       '#type' => 'textfield',
       '#autocomplete_route_name' => 'civicrm_fields.endpoint',
       '#autocomplete_route_parameters' => [
-        'entity' => 'contact',
+        'entity' => 'event',
         'count' => 10,
       ],
-      '#default_value' => isset($item->contact_id) ? $item->contact_id : NULL,
+      '#default_value' => isset($item->event_id) ? $item->event_id : NULL,
     ];
     // Return element(s).
     return $element;

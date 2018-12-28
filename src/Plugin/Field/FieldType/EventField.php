@@ -8,17 +8,17 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
- * Plugin implementation of the 'civicrm_field_contact' field type.
+ * Plugin implementation of the 'civicrm_field_event' field type.
  *
  * @FieldType(
- *   id = "civicrm_field_contact",
- *   label = @Translation("CiviCRM field_contact"),
+ *   id = "civicrm_field_event",
+ *   label = @Translation("CiviCRM field_event"),
  *   category = @Translation("CiviCRM"),
- *   default_widget = "civicrm_field_contact_widget",
- *   default_formatter = "civicrm_field_contact_default_formatter"
+ *   default_widget = "civicrm_field_event_widget",
+ *   default_formatter = "civicrm_field_event_default_formatter"
  * )
  */
-class ContactField extends FieldItemBase implements FieldItemInterface {
+class EventField extends FieldItemBase implements FieldItemInterface {
 
   /**
    * {@inheritdoc}
@@ -26,9 +26,9 @@ class ContactField extends FieldItemBase implements FieldItemInterface {
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
     // Store value(s) for the field.
     $schema['columns'] = [
-      'contact_id' => [
+      'event_id' => [
         'type' => 'varchar',
-        'description' => 'CiviCRM Contact ID.',
+        'description' => 'CiviCRM Event ID.',
         'length' => 256,
         'not_null' => FALSE,
       ],
@@ -42,8 +42,8 @@ class ContactField extends FieldItemBase implements FieldItemInterface {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     // Details about field properties.
-    $properties['contact_id'] = DataDefinition::create('any')
-      ->setLabel(t('CiviCRM Contact ID'));
+    $properties['event_id'] = DataDefinition::create('any')
+      ->setLabel(t('CiviCRM Event ID'));
     // Return properties.
     return $properties;
   }
@@ -55,16 +55,16 @@ class ContactField extends FieldItemBase implements FieldItemInterface {
     // How to determine if field is empty.
     $item = $this->getValue();
     // Check if field is set.
-    if (!isset($item['contact_id'])) {
+    if (!isset($item['event_id'])) {
       return TRUE;
     }
-    // Check if contact_id exists in CiviCRM.
+    // Check if event_id exists in CiviCRM.
     try {
       /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
       $civicrm = \Drupal::service('civicrm.service');
-      $results = $civicrm->API('Contact', 'GetSingle', ['contact_id' => $item['contact_id']]);
+      $results = $civicrm->API('Event', 'GetSingle', ['id' => $item['event_id']]);
     } catch (\Exception $e) {
-      \Drupal::logger('ContactField')->error($e->getMessage());
+      \Drupal::logger('EventField')->error($e->getMessage());
     }
     if (empty($results)) {
       return TRUE;

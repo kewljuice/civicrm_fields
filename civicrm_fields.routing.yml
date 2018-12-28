@@ -1,4 +1,4 @@
-civicrm_fields.contact_endpoint:
+civicrm_fields.endpoint:
   path: '/civicrm_fields/{entity}/{count}'
   defaults:
     _controller: 'Drupal\civicrm_fields\Controller\CiviCRMFields::Response'

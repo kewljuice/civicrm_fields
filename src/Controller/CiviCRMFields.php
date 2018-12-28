@@ -28,7 +28,14 @@ class CiviCRMFields extends ControllerBase {
           try {
             $results = $this->lookupContact($typed_string, $count);
           } catch (\Exception $e) {
-            \Drupal::logger('ContactFormatter')->error($e->getMessage());
+            \Drupal::logger('Response')->error($e->getMessage());
+          }
+          break;
+        case 'event':
+          try {
+            $results = $this->lookupEvent($typed_string, $count);
+          } catch (\Exception $e) {
+            \Drupal::logger('Response')->error($e->getMessage());
           }
           break;
       }
@@ -75,7 +82,7 @@ class CiviCRMFields extends ControllerBase {
       $civicrm = \Drupal::service('civicrm.service');
       $founded = $civicrm->API('Contact', 'Get', $params);
     } catch (\Exception $e) {
-      \Drupal::logger('ContactFormatter')->error($e->getMessage());
+      \Drupal::logger('lookupContact')->error($e->getMessage());
     }
     if (!is_null($founded) && !empty($founded)) {
       foreach ($founded['values'] as $found) {
@@ -88,4 +95,57 @@ class CiviCRMFields extends ControllerBase {
     // Return found contacts.
     return $results;
   }
+
+  /**
+   * Gets results from the CiviCRM api.
+   *
+   * @param string $search
+   *   The search keyword.
+   *
+   * @param string $count
+   *   The amount of results.
+   *
+   * @return array
+   *   An array with result(s).
+   *
+   * @throws \Exception
+   */
+  protected function lookupEvent($search, $count) {
+    $results = [];
+    // Find CiviCRM events.
+    if (is_numeric($search)) {
+      // Search contact by contact_id.
+      $params = [
+        'id' => $search,
+        'return' => ['id', 'title'],
+        'options' => ['limit' => $count],
+      ];
+    }
+    else {
+      // Search contact by display_name.
+      $params = [
+        'title' => $search,
+        'return' => ['id', 'title'],
+        'options' => ['limit' => $count],
+      ];
+    }
+    try {
+      /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
+      $civicrm = \Drupal::service('civicrm.service');
+      $founded = $civicrm->API('Event', 'Get', $params);
+    } catch (\Exception $e) {
+      \Drupal::logger('lookupEvent')->error($e->getMessage());
+    }
+    if (!is_null($founded) && !empty($founded)) {
+      foreach ($founded['values'] as $found) {
+        $results[] = [
+          'value' => $found['id'],
+          'label' => $found['title'] . ' (' . $found['id'] . ')',
+        ];
+      }
+    }
+    // Return found events.
+    return $results;
+  }
+
 }
