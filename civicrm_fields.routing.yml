@@ -1,7 +1,8 @@
 civicrm_fields.endpoint:
   path: '/civicrm_fields/{entity}/{count}'
   defaults:
-    _controller: 'Drupal\civicrm_fields\Controller\CiviCRMFields::Response'
+    _controller: 'Drupal\civicrm_fields\Controller\CivicrmFields::response'
     _format: json
   requirements:
+    # @todo limit access.
     _access: 'TRUE'

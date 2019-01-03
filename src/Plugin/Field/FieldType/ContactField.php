@@ -62,8 +62,9 @@ class ContactField extends FieldItemBase implements FieldItemInterface {
     try {
       /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
       $civicrm = \Drupal::service('civicrm.service');
-      $results = $civicrm->API('Contact', 'GetSingle', ['contact_id' => $item['contact_id']]);
-    } catch (\Exception $e) {
+      $results = $civicrm->api('Contact', 'GetSingle', ['contact_id' => $item['contact_id']]);
+    }
+    catch (\Exception $e) {
       \Drupal::logger('ContactField')->error($e->getMessage());
     }
     if (empty($results)) {
@@ -79,4 +80,5 @@ class ContactField extends FieldItemBase implements FieldItemInterface {
   public function preSave() {
     /* Alter values. */
   }
+
 }

@@ -28,13 +28,13 @@ class ContactWidget extends WidgetBase implements WidgetInterface {
     // Store element(s) for the field.
     $element += [
       '#type' => 'details',
-      '#title' => t('CiviCRM Contact'),
+      '#title' => $this->t('CiviCRM Contact'),
       '#open' => FALSE,
       '#group' => 'advanced',
     ];
     // Autocomplete field for contact_id.
     $element['contact_id'] = [
-      '#title' => t('CiviCRM Contact ID'),
+      '#title' => $this->t('CiviCRM Contact ID'),
       '#type' => 'textfield',
       '#autocomplete_route_name' => 'civicrm_fields.endpoint',
       '#autocomplete_route_parameters' => [
@@ -46,4 +46,5 @@ class ContactWidget extends WidgetBase implements WidgetInterface {
     // Return element(s).
     return $element;
   }
+
 }

@@ -2,21 +2,64 @@
 
 namespace Drupal\civicrm_fields\Controller;
 
+use Drupal\civicrm_fields\Utility\CivicrmService;
 use Drupal\Component\Utility\Tags;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class CiviCRMFields extends ControllerBase {
+/**
+ * Class CivicrmFields.
+ */
+class CivicrmFields extends ControllerBase {
+
+  /**
+   * The CiviCRM API service.
+   *
+   * @var \Drupal\civicrm_fields\Utility\CivicrmService
+   */
+  protected $service;
+
+  /**
+   * The logger service.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  protected $logger;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    $service = $container->get('civicrm.service');
+    $logger = $container->get('logger.factory');
+    return new static($service, $logger);
+  }
+
+  /**
+   * Constructs a \Drupal\civicrm_fields\Controller\CivicrmFields object.
+   *
+   * @param \Drupal\civicrm_fields\Utility\CivicrmService $service
+   *   The CiviCRM API service.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
+   *   The logger factory service.
+   */
+  public function __construct(CivicrmService $service, LoggerChannelFactoryInterface $logger) {
+    $this->service = $service;
+    $this->logger = $logger;
+  }
 
   /**
    * Return JSON response.
    *
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   An JsonResponse with result(s).
    *
    * @throws \Exception
    */
-  public function Response(Request $request, $entity, $count) {
+  public function response(Request $request, $entity, $count) {
     $results = [];
     // Get the typed string from the URL, if exists.
     if ($input = $request->query->get('q')) {
@@ -27,15 +70,20 @@ class CiviCRMFields extends ControllerBase {
         case 'contact':
           try {
             $results = $this->lookupContact($typed_string, $count);
-          } catch (\Exception $e) {
-            \Drupal::logger('Response')->error($e->getMessage());
+          }
+          catch (\Exception $e) {
+            $this->logger->get('CivicrmFields')
+              ->error($e->getMessage());
           }
           break;
+
         case 'event':
           try {
             $results = $this->lookupEvent($typed_string, $count);
-          } catch (\Exception $e) {
-            \Drupal::logger('Response')->error($e->getMessage());
+          }
+          catch (\Exception $e) {
+            $this->logger->get('CivicrmFields')
+              ->error($e->getMessage());
           }
           break;
       }
@@ -49,7 +97,6 @@ class CiviCRMFields extends ControllerBase {
    *
    * @param string $search
    *   The search keyword.
-   *
    * @param string $count
    *   The amount of results.
    *
@@ -78,11 +125,11 @@ class CiviCRMFields extends ControllerBase {
       ];
     }
     try {
-      /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
-      $civicrm = \Drupal::service('civicrm.service');
-      $founded = $civicrm->API('Contact', 'Get', $params);
-    } catch (\Exception $e) {
-      \Drupal::logger('lookupContact')->error($e->getMessage());
+      $founded = $this->service->api('Contact', 'Get', $params);
+    }
+    catch (\Exception $e) {
+      $this->logger->get('CivicrmFields')
+        ->error($e->getMessage());
     }
     if (!is_null($founded) && !empty($founded)) {
       foreach ($founded['values'] as $found) {
@@ -101,7 +148,6 @@ class CiviCRMFields extends ControllerBase {
    *
    * @param string $search
    *   The search keyword.
-   *
    * @param string $count
    *   The amount of results.
    *
@@ -130,11 +176,11 @@ class CiviCRMFields extends ControllerBase {
       ];
     }
     try {
-      /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
-      $civicrm = \Drupal::service('civicrm.service');
-      $founded = $civicrm->API('Event', 'Get', $params);
-    } catch (\Exception $e) {
-      \Drupal::logger('lookupEvent')->error($e->getMessage());
+      $founded = $this->service->api('Event', 'Get', $params);
+    }
+    catch (\Exception $e) {
+      $this->logger->get('CivicrmFields')
+        ->error($e->getMessage());
     }
     if (!is_null($founded) && !empty($founded)) {
       foreach ($founded['values'] as $found) {

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Module 'civicrm_fields'.
+ */
+
+/**
  * Implements hook_theme().
  */
 function civicrm_fields_theme() {

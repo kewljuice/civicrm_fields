@@ -28,13 +28,13 @@ class EventWidget extends WidgetBase implements WidgetInterface {
     // Store element(s) for the field.
     $element += [
       '#type' => 'details',
-      '#title' => t('CiviCRM Event'),
+      '#title' => $this->t('CiviCRM Event'),
       '#open' => FALSE,
       '#group' => 'advanced',
     ];
     // Autocomplete field for event_id.
     $element['event_id'] = [
-      '#title' => t('CiviCRM Event ID'),
+      '#title' => $this->t('CiviCRM Event ID'),
       '#type' => 'textfield',
       '#autocomplete_route_name' => 'civicrm_fields.endpoint',
       '#autocomplete_route_parameters' => [
@@ -46,4 +46,5 @@ class EventWidget extends WidgetBase implements WidgetInterface {
     // Return element(s).
     return $element;
   }
+
 }

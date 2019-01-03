@@ -5,17 +5,15 @@ namespace Drupal\civicrm_fields\Utility;
 /**
  * Central interface for implementing CiviCRMService.
  */
-interface CiviCRMServiceInterface {
+interface CivicrmServiceInterface {
 
   /**
    * Gets results from the CiviCRM api.
    *
    * @param string $entity
    *   The CiviCRM API entity.
-   *
    * @param string $action
    *   The CiviCRM API action.
-   *
    * @param array $params
    *   The CiviCRM API params.
    *
@@ -24,5 +22,6 @@ interface CiviCRMServiceInterface {
    *
    * @throws \Exception
    */
-  public function API($entity, $action, $params);
+  public function api($entity, $action, array $params);
+
 }

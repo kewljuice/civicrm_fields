@@ -62,8 +62,9 @@ class EventField extends FieldItemBase implements FieldItemInterface {
     try {
       /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
       $civicrm = \Drupal::service('civicrm.service');
-      $results = $civicrm->API('Event', 'GetSingle', ['id' => $item['event_id']]);
-    } catch (\Exception $e) {
+      $results = $civicrm->api('Event', 'GetSingle', ['id' => $item['event_id']]);
+    }
+    catch (\Exception $e) {
       \Drupal::logger('EventField')->error($e->getMessage());
     }
     if (empty($results)) {
@@ -79,4 +80,5 @@ class EventField extends FieldItemBase implements FieldItemInterface {
   public function preSave() {
     /* Alter values. */
   }
+
 }
