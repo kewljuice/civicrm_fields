@@ -79,7 +79,7 @@ class CivicrmFields extends ControllerBase {
 
         case 'event':
           try {
-            $results = $this->lookupEvent($typed_string, $count);
+            $results = $this->lookupEntity($typed_string, $count, 'Event');
           }
           catch (\Exception $e) {
             $this->logger->get('CivicrmFields')
@@ -89,7 +89,7 @@ class CivicrmFields extends ControllerBase {
 
         case 'contributionPage':
           try {
-            $results = $this->lookupContributionPage($typed_string, $count);
+            $results = $this->lookupEntity($typed_string, $count, 'ContributionPage');
           }
           catch (\Exception $e) {
             $this->logger->get('CivicrmFields')
@@ -103,7 +103,7 @@ class CivicrmFields extends ControllerBase {
   }
 
   /**
-   * Gets results from the CiviCRM api.
+   * Gets contact from the CiviCRM api.
    *
    * @param string $search
    *   The search keyword.
@@ -154,7 +154,7 @@ class CivicrmFields extends ControllerBase {
   }
 
   /**
-   * Gets results from the CiviCRM api.
+   * Gets entity from the CiviCRM api.
    *
    * @param string $search
    *   The search keyword.
@@ -166,11 +166,11 @@ class CivicrmFields extends ControllerBase {
    *
    * @throws \Exception
    */
-  protected function lookupEvent($search, $count) {
+  protected function lookupEntity($search, $count, $entity) {
     $results = [];
-    // Find CiviCRM events.
+    // Find CiviCRM entity.
     if (is_numeric($search)) {
-      // Search contact by id.
+      // Search entity by id.
       $params = [
         'id' => $search,
         'return' => ['id', 'title'],
@@ -178,7 +178,7 @@ class CivicrmFields extends ControllerBase {
       ];
     }
     else {
-      // Search contact by title.
+      // Search entity by title.
       $params = [
         'title' => ['LIKE' => "%$search%"],
         'return' => ['id', 'title'],
@@ -186,7 +186,7 @@ class CivicrmFields extends ControllerBase {
       ];
     }
     try {
-      $founded = $this->service->api('Event', 'Get', $params);
+      $founded = $this->service->api($entity, 'Get', $params);
     }
     catch (\Exception $e) {
       $this->logger->get('CivicrmFields')
@@ -200,58 +200,7 @@ class CivicrmFields extends ControllerBase {
         ];
       }
     }
-    // Return found events.
-    return $results;
-  }
-
-  /**
-   * Gets results from the CiviCRM api.
-   *
-   * @param string $search
-   *   The search keyword.
-   * @param string $count
-   *   The amount of results.
-   *
-   * @return array
-   *   An array with result(s).
-   *
-   * @throws \Exception
-   */
-  protected function lookupContributionPage($search, $count) {
-    $results = [];
-    // Find CiviCRM contribution pages.
-    if (is_numeric($search)) {
-      // Search contact by id.
-      $params = [
-        'id' => $search,
-        'return' => ['id', 'title'],
-        'options' => ['limit' => $count],
-      ];
-    }
-    else {
-      // Search contact by title.
-      $params = [
-        'title' => ['LIKE' => "%$search%"],
-        'return' => ['id', 'title'],
-        'options' => ['limit' => $count],
-      ];
-    }
-    try {
-      $founded = $this->service->api('ContributionPage', 'Get', $params);
-    }
-    catch (\Exception $e) {
-      $this->logger->get('CivicrmFields')
-        ->error($e->getMessage());
-    }
-    if (!is_null($founded) && !empty($founded)) {
-      foreach ($founded['values'] as $found) {
-        $results[] = [
-          'value' => $found['id'],
-          'label' => $found['title'] . ' (' . $found['id'] . ')',
-        ];
-      }
-    }
-    // Return found events.
+    // Return found entity.
     return $results;
   }
 
