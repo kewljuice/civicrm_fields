@@ -55,7 +55,7 @@ class EventField extends FieldItemBase implements FieldItemInterface {
     // How to determine if field is empty.
     $item = $this->getValue();
     // Check if field is set.
-    if (!isset($item['event_id'])) {
+    if (!isset($item['event_id']) || empty($item['event_id'])) {
       return TRUE;
     }
     // Check if event_id exists in CiviCRM.
