@@ -86,6 +86,16 @@ class CivicrmFields extends ControllerBase {
               ->error($e->getMessage());
           }
           break;
+
+        case 'contributionPage':
+          try {
+            $results = $this->lookupContributionPage($typed_string, $count);
+          }
+          catch (\Exception $e) {
+            $this->logger->get('CivicrmFields')
+              ->error($e->getMessage());
+          }
+          break;
       }
     }
     // Return response.
@@ -160,7 +170,7 @@ class CivicrmFields extends ControllerBase {
     $results = [];
     // Find CiviCRM events.
     if (is_numeric($search)) {
-      // Search contact by contact_id.
+      // Search contact by id.
       $params = [
         'id' => $search,
         'return' => ['id', 'title'],
@@ -168,15 +178,66 @@ class CivicrmFields extends ControllerBase {
       ];
     }
     else {
-      // Search contact by display_name.
+      // Search contact by title.
       $params = [
-        'title' => $search,
+        'title' => ['LIKE' => "%$search%"],
         'return' => ['id', 'title'],
         'options' => ['limit' => $count],
       ];
     }
     try {
       $founded = $this->service->api('Event', 'Get', $params);
+    }
+    catch (\Exception $e) {
+      $this->logger->get('CivicrmFields')
+        ->error($e->getMessage());
+    }
+    if (!is_null($founded) && !empty($founded)) {
+      foreach ($founded['values'] as $found) {
+        $results[] = [
+          'value' => $found['id'],
+          'label' => $found['title'] . ' (' . $found['id'] . ')',
+        ];
+      }
+    }
+    // Return found events.
+    return $results;
+  }
+
+  /**
+   * Gets results from the CiviCRM api.
+   *
+   * @param string $search
+   *   The search keyword.
+   * @param string $count
+   *   The amount of results.
+   *
+   * @return array
+   *   An array with result(s).
+   *
+   * @throws \Exception
+   */
+  protected function lookupContributionPage($search, $count) {
+    $results = [];
+    // Find CiviCRM contribution pages.
+    if (is_numeric($search)) {
+      // Search contact by id.
+      $params = [
+        'id' => $search,
+        'return' => ['id', 'title'],
+        'options' => ['limit' => $count],
+      ];
+    }
+    else {
+      // Search contact by title.
+      $params = [
+        'title' => ['LIKE' => "%$search%"],
+        'return' => ['id', 'title'],
+        'options' => ['limit' => $count],
+      ];
+    }
+    try {
+      $founded = $this->service->api('ContributionPage', 'Get', $params);
     }
     catch (\Exception $e) {
       $this->logger->get('CivicrmFields')
