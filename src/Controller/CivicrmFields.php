@@ -196,8 +196,7 @@ class CivicrmFields extends ControllerBase {
     if (!is_null($founded) && !empty($founded)) {
       foreach ($founded['values'] as $found) {
         $results[] = [
-          'value' => $found['id'],
-          'label' => $found['title'] . ' (' . $found['id'] . ')',
+          'value' => $found['title'] . ' (' . $found['id'] . ')',
         ];
       }
     }

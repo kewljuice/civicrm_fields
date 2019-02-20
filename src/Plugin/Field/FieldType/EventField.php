@@ -58,6 +58,11 @@ class EventField extends FieldItemBase implements FieldItemInterface {
     if (!isset($item['event_id']) || empty($item['event_id'])) {
       return TRUE;
     }
+    // Subtract contact_id from default value.
+    if (preg_match('!\(([^\)]+)\)!', $item['event_id'], $match)) {
+      $item['event_id'] = $match[1];
+      $this->setValue($item);
+    }
     // Check if event_id exists in CiviCRM.
     try {
       /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */

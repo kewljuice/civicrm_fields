@@ -58,6 +58,11 @@ class ContributionPageField extends FieldItemBase implements FieldItemInterface 
     if (!isset($item['contribution_page_id']) || empty($item['contribution_page_id'])) {
       return TRUE;
     }
+    // Subtract contact_id from default value.
+    if (preg_match('!\(([^\)]+)\)!', $item['contribution_page_id'], $match)) {
+      $item['contribution_page_id'] = $match[1];
+      $this->setValue($item);
+    }
     // Check if contribution_page_id exists in CiviCRM.
     try {
       /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
