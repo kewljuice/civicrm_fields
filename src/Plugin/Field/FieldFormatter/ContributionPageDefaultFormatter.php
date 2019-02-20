@@ -6,8 +6,10 @@ use Drupal\civicrm_fields\Utility\CivicrmService;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
+use Drupal\Core\Link;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -89,14 +91,8 @@ class ContributionPageDefaultFormatter extends FormatterBase implements Containe
             ->error($e->getMessage());
         }
         if (!is_null($results) && !empty($results)) {
-          $elements[] = [
-            '#type' => 'markup',
-            '#markup' => $results['title'],
-            '#cache' => [
-              'max-age' => 0,
-            ],
-          ];
-
+          $link = Link::fromTextAndUrl($results['title'], Url::fromUri('base:civicrm/contribute/transact?id=' . $results['id']));
+          $elements[] = $link->toRenderable();
         }
       }
     }
