@@ -2,10 +2,13 @@
 
 namespace Drupal\civicrm_fields\Plugin\Field\FieldWidget;
 
+use Drupal\civicrm_fields\Utility\CivicrmService;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
-use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin implementation of the 'civicrm_field_contact' field widget.
@@ -18,7 +21,36 @@ use Drupal\Core\Form\FormStateInterface;
  *   }
  * )
  */
-class ContactWidget extends WidgetBase implements WidgetInterface {
+class ContactWidget extends WidgetBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The CiviCRM API service.
+   *
+   * @var \Drupal\civicrm_fields\Utility\CivicrmService
+   */
+  protected $service;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['third_party_settings'],
+      $container->get('civicrm.service')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, CivicrmService $service) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
+    $this->service = $service;
+  }
 
   /**
    * {@inheritdoc}
@@ -32,6 +64,12 @@ class ContactWidget extends WidgetBase implements WidgetInterface {
       '#open' => FALSE,
       '#group' => 'advanced',
     ];
+    // Fetch default value.
+    $default = NULL;
+    if (isset($item->contact_id)) {
+      $result = $this->service->api('Contact', 'GetSingle', ['contact_id' => $item->contact_id]);
+      $default = $result['display_name'] . ' (' . $result['contact_id'] . ')';
+    }
     // Autocomplete field for contact_id.
     $element['contact_id'] = [
       '#title' => $this->t('CiviCRM Contact ID'),
@@ -41,7 +79,7 @@ class ContactWidget extends WidgetBase implements WidgetInterface {
         'entity' => 'contact',
         'count' => 10,
       ],
-      '#default_value' => isset($item->contact_id) ? $item->contact_id : NULL,
+      '#default_value' => $default,
     ];
     // Return element(s).
     return $element;

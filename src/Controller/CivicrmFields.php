@@ -144,8 +144,7 @@ class CivicrmFields extends ControllerBase {
     if (!is_null($founded) && !empty($founded)) {
       foreach ($founded['values'] as $found) {
         $results[] = [
-          'value' => $found['contact_id'],
-          'label' => $found['display_name'] . ' (' . $found['contact_id'] . ')',
+          'value' => $found['display_name'] . ' (' . $found['contact_id'] . ')',
         ];
       }
     }
@@ -160,6 +159,8 @@ class CivicrmFields extends ControllerBase {
    *   The search keyword.
    * @param string $count
    *   The amount of results.
+   * @param string $entity
+   *   The API entity.
    *
    * @return array
    *   An array with result(s).

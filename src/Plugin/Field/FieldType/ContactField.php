@@ -58,6 +58,11 @@ class ContactField extends FieldItemBase implements FieldItemInterface {
     if (!isset($item['contact_id'])) {
       return TRUE;
     }
+    // Subtract contact_id from default value.
+    if (preg_match('!\(([^\)]+)\)!', $item['contact_id'], $match)) {
+      $item['contact_id'] = $match[1];
+      $this->setValue($item);
+    }
     // Check if contact_id exists in CiviCRM.
     try {
       /** @var \Drupal\civicrm_fields\Utility\CiviCRMServiceInterface $civicrm */
