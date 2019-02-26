@@ -69,7 +69,7 @@ class CivicrmFields extends ControllerBase {
       switch ($entity) {
         case 'contact':
           try {
-            $results = $this->lookupContact($typed_string, $count);
+            $results = $this->lookupEntity($typed_string, $count, 'Contact', 'display_name');
           }
           catch (\Exception $e) {
             $this->logger->get('CivicrmFields')
@@ -79,7 +79,7 @@ class CivicrmFields extends ControllerBase {
 
         case 'event':
           try {
-            $results = $this->lookupEntity($typed_string, $count, 'Event');
+            $results = $this->lookupEntity($typed_string, $count, 'Event', 'title', ['is_template' => 0]);
           }
           catch (\Exception $e) {
             $this->logger->get('CivicrmFields')
@@ -89,7 +89,7 @@ class CivicrmFields extends ControllerBase {
 
         case 'contributionPage':
           try {
-            $results = $this->lookupEntity($typed_string, $count, 'ContributionPage');
+            $results = $this->lookupEntity($typed_string, $count, 'ContributionPage', 'title');
           }
           catch (\Exception $e) {
             $this->logger->get('CivicrmFields')
@@ -103,56 +103,6 @@ class CivicrmFields extends ControllerBase {
   }
 
   /**
-   * Gets contact from the CiviCRM api.
-   *
-   * @param string $search
-   *   The search keyword.
-   * @param string $count
-   *   The amount of results.
-   *
-   * @return array
-   *   An array with result(s).
-   *
-   * @throws \Exception
-   */
-  protected function lookupContact($search, $count) {
-    $results = [];
-    // Find CiviCRM contacts.
-    if (is_numeric($search)) {
-      // Search contact by contact_id.
-      $params = [
-        'contact_id' => $search,
-        'return' => ['id', 'display_name'],
-        'options' => ['limit' => $count],
-      ];
-    }
-    else {
-      // Search contact by display_name.
-      $params = [
-        'display_name' => $search,
-        'return' => ['id', 'display_name'],
-        'options' => ['limit' => $count],
-      ];
-    }
-    try {
-      $founded = $this->service->api('Contact', 'Get', $params);
-    }
-    catch (\Exception $e) {
-      $this->logger->get('CivicrmFields')
-        ->error($e->getMessage());
-    }
-    if (!is_null($founded) && !empty($founded)) {
-      foreach ($founded['values'] as $found) {
-        $results[] = [
-          'value' => $found['display_name'] . ' (' . $found['contact_id'] . ')',
-        ];
-      }
-    }
-    // Return found contacts.
-    return $results;
-  }
-
-  /**
    * Gets entity from the CiviCRM api.
    *
    * @param string $search
@@ -161,20 +111,24 @@ class CivicrmFields extends ControllerBase {
    *   The amount of results.
    * @param string $entity
    *   The API entity.
+   * @param string $label
+   *   The label.
+   * @param array $extra
+   *   The extra params.
    *
    * @return array
    *   An array with result(s).
    *
    * @throws \Exception
    */
-  protected function lookupEntity($search, $count, $entity) {
+  protected function lookupEntity($search, $count, $entity, $label, array $extra = []) {
     $results = [];
     // Find CiviCRM entity.
     if (is_numeric($search)) {
       // Search entity by id.
       $params = [
         'id' => $search,
-        'return' => ['id', 'title'],
+        'return' => ['id', $label],
         'options' => ['limit' => $count],
       ];
     }
@@ -182,9 +136,13 @@ class CivicrmFields extends ControllerBase {
       // Search entity by title.
       $params = [
         'title' => ['LIKE' => "%$search%"],
-        'return' => ['id', 'title'],
+        'return' => ['id', $label],
         'options' => ['limit' => $count],
       ];
+    }
+    // Extra filters.
+    if (!empty($extra)) {
+      $params = array_merge($params, $extra);
     }
     try {
       $founded = $this->service->api($entity, 'Get', $params);
@@ -196,7 +154,7 @@ class CivicrmFields extends ControllerBase {
     if (!is_null($founded) && !empty($founded)) {
       foreach ($founded['values'] as $found) {
         $results[] = [
-          'value' => $found['title'] . ' (' . $found['id'] . ')',
+          'value' => $found[$label] . ' (' . $found['id'] . ')',
         ];
       }
     }
